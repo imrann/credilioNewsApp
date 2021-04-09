@@ -1,4 +1,5 @@
-import 'package:credilio_news/StateManager/TopHeadlinesState.dart';
+import 'package:credilio_news/StateManager/BreakingNewListState.dart';
+import 'package:credilio_news/StateManager/CategoryNewsListState.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => TopHeadlinesState()),
+          ChangeNotifierProvider(create: (context) => CategoryNewsListState()),
         ],
         child: MaterialApp(
           onGenerateRoute: RouterGenerator.generateRoute,

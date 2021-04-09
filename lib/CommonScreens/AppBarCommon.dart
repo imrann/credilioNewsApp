@@ -1,3 +1,4 @@
+import 'package:credilio_news/StateManager/CategoryNewsListState.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -123,6 +124,11 @@ class _AppBarCommonState extends State<AppBarCommon> {
                   setState(() {
                     l_isSearch = null;
                   });
+                } else if (icon == Icons.grid_view) {
+                  var toggleCategoryNewsView =
+                      Provider.of<CategoryNewsListState>(context,
+                          listen: false);
+                  toggleCategoryNewsView.setToggleCategoryNewsView();
                 }
 
                 //  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Maintainance()),);

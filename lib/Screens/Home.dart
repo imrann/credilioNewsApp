@@ -1,6 +1,10 @@
 import 'dart:io';
 
 import 'package:credilio_news/CommonScreens/AppBarCommon.dart';
+import 'package:credilio_news/CommonScreens/ErrorPage.dart';
+import 'package:credilio_news/CommonScreens/FancyLoader.dart';
+import 'package:credilio_news/StateManager/CategoryNewsListState.dart';
+import 'package:provider/provider.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:flutter/material.dart';
 
@@ -64,6 +68,7 @@ class _HomeState extends State<Home> {
               fontStyle: FontStyle.italic),
         ),
         profileIcon: Icons.search,
+        trailingIcon: Icons.grid_view,
         centerTile: false,
         context: context,
         notificationCount: Text("i"),
@@ -101,29 +106,47 @@ class _HomeState extends State<Home> {
             padding: const EdgeInsets.only(left: 10, top: 10),
             child: SizedBox(
               height: 450,
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 30,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        // elevation: 2,
-                        // color: Colors.transparent,
-                        child: Container(
-                          decoration: new BoxDecoration(
-                            color: Colors.blueGrey,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          height: 400,
-                          width: 300,
-                        ),
-                      ),
+              child: FutureBuilder<dynamic>(
+                  future: Future.delayed(Duration(seconds: 5), () {}),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    // if (snapshot.hasError) {
+                    //   final error = snapshot.error;
+
+                    //   return ErrorPage(error: error.toString());
+                    // } else if (snapshot.hasData) {
+                    //   return ListView.builder(
+                    //       shrinkWrap: true,
+                    //       physics: ClampingScrollPhysics(),
+                    //       scrollDirection: Axis.horizontal,
+                    //       itemCount: 30,
+                    //       itemBuilder: (BuildContext context, int index) {
+                    //         return Padding(
+                    //           padding: const EdgeInsets.only(right: 10),
+                    //           child: Card(
+                    //             shape: RoundedRectangleBorder(
+                    //               borderRadius: BorderRadius.circular(30),
+                    //             ),
+                    //             // elevation: 2,
+                    //             // color: Colors.transparent,
+                    //             child: Container(
+                    //               decoration: new BoxDecoration(
+                    //                 color: Colors.blueGrey,
+                    //                 borderRadius: BorderRadius.circular(30),
+                    //               ),
+                    //               height: 400,
+                    //               width: 300,
+                    //             ),
+                    //           ),
+                    //         );
+                    //       });
+                    // } else {
+                    //   return FancyLoader(
+                    //     loaderType: "MainGrid",
+                    //   );
+                    // }
+                    return FancyLoader(
+                      loaderType: "MainGrid",
                     );
                   }),
             ),
@@ -157,26 +180,48 @@ class _HomeState extends State<Home> {
             ),
             content: Padding(
               padding: const EdgeInsets.only(left: 10, right: 10),
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 30,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      // elevation: 2,
-                      // color: Colors.transparent,
-                      child: Container(
-                        decoration: new BoxDecoration(
-                          color: Colors.blueGrey,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        height: 100,
-                        width: MediaQuery.of(context).size.width,
-                      ),
-                    );
+              child: FutureBuilder<dynamic>(
+                  future: Future.delayed(Duration(seconds: 5), () {}),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    // if (snapshot.hasError) {
+                    //   final error = snapshot.error;
+
+                    //   return ErrorPage(error: error.toString());
+                    // } else if (snapshot.hasData) {
+                    //   return ListView.builder(
+                    //       shrinkWrap: true,
+                    //       physics: NeverScrollableScrollPhysics(),
+                    //       itemCount: 30,
+                    //       itemBuilder: (BuildContext context, int index) {
+                    //         return Card(
+                    //           shape: RoundedRectangleBorder(
+                    //             borderRadius: BorderRadius.circular(10),
+                    //           ),
+                    //           // elevation: 2,
+                    //           // color: Colors.transparent,
+                    //           child: Container(
+                    //             decoration: new BoxDecoration(
+                    //               color: Colors.blueGrey,
+                    //               borderRadius: BorderRadius.circular(10),
+                    //             ),
+                    //             height: 100,
+                    //             width: MediaQuery.of(context).size.width,
+                    //           ),
+                    //         );
+                    //       });
+                    // } else {
+                    //   return FancyLoader(
+                    //     loaderType: "MainGrid",
+                    //   );
+                    // }
+                    return Consumer<CategoryNewsListState>(
+                        builder: (context, data, child) {
+                      return FancyLoader(
+                        loaderType:
+                            data.getToggleCategoryNewsView() ? "list" : "Grid",
+                      );
+                    });
                   }),
             ),
           ),
