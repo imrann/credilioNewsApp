@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:credilio_news/CommonScreens/AppBarCommon.dart';
 import 'package:credilio_news/CommonScreens/ErrorPage.dart';
 import 'package:credilio_news/CommonScreens/FancyLoader.dart';
+import 'package:credilio_news/CommonScreens/NewsCategories.dart';
 import 'package:credilio_news/StateManager/CategoryNewsListState.dart';
 import 'package:provider/provider.dart';
 import 'package:sticky_headers/sticky_headers.dart';
@@ -159,7 +160,7 @@ class _HomeState extends State<Home> {
                   shrinkWrap: true,
                   physics: ClampingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
-                  itemCount: 7,
+                  itemCount: NewsCategories.values.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       padding:
@@ -170,7 +171,10 @@ class _HomeState extends State<Home> {
                             Navigator.pushNamed(context, '/NewsArticle');
                           },
                           child: Text(
-                            "Category$index",
+                            NewsCategories.values[index]
+                                .toString()
+                                .substring(15)
+                                .toUpperCase(),
                             style: TextStyle(
                                 letterSpacing: -1,
                                 color: Colors.grey[300],
