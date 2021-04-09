@@ -1,4 +1,5 @@
 import 'package:credilio_news/Screens/Home.dart';
+import 'package:credilio_news/Screens/NewsArticle.dart';
 import 'package:credilio_news/Screens/Splash.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,11 @@ class RouterGenerator {
       case '/Home':
         return MaterialPageRoute(
           builder: (_) => Home(),
+        );
+
+      case '/NewsArticle':
+        return MaterialPageRoute(
+          builder: (_) => NewsArticle(),
         );
 
       default:

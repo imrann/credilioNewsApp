@@ -154,7 +154,7 @@ class _HomeState extends State<Home> {
           StickyHeader(
             header: Container(
               color: Colors.white,
-              height: 50,
+              height: 60,
               child: ListView.builder(
                   shrinkWrap: true,
                   physics: ClampingScrollPhysics(),
@@ -165,14 +165,19 @@ class _HomeState extends State<Home> {
                       padding:
                           const EdgeInsets.only(left: 15, bottom: 10, top: 10),
                       child: Container(
-                        child: Text(
-                          "Category$index",
-                          style: TextStyle(
-                              letterSpacing: -1,
-                              color: Colors.grey[300],
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.normal),
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/NewsArticle');
+                          },
+                          child: Text(
+                            "Category$index",
+                            style: TextStyle(
+                                letterSpacing: -1,
+                                color: Colors.grey[300],
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.normal),
+                          ),
                         ),
                       ),
                     );

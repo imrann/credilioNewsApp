@@ -10,7 +10,7 @@ class FancyLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[200],
+      baseColor: Colors.grey[300],
       period: Duration(milliseconds: 500),
       highlightColor: Colors.white,
       child: getLoaderType(loaderType: loaderType, lines: lines),
@@ -31,9 +31,9 @@ class FancyLoader extends StatelessWidget {
         }
         break;
 
-      case "mLine":
+      case "HorizontalCards":
         {
-          return getMultiLineLoader(lines);
+          return getHorizontalCardLoader();
         }
         break;
       case "Grid":
@@ -53,10 +53,10 @@ class FancyLoader extends StatelessWidget {
   Widget getLogoLoader() {
     return Center(
       child: Text(
-        'KIRANAS',
+        'CREDILIO',
         textAlign: TextAlign.center,
         style: TextStyle(
-            color: Colors.grey,
+            color: Colors.grey[300],
             fontSize: 50.0,
             fontWeight: FontWeight.bold,
             wordSpacing: 2,
@@ -82,7 +82,7 @@ class FancyLoader extends StatelessWidget {
               // color: Colors.transparent,
               child: Container(
                 decoration: new BoxDecoration(
-                  color: Colors.grey[200],
+                  color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(30),
                 ),
                 height: 400,
@@ -93,12 +93,29 @@ class FancyLoader extends StatelessWidget {
         });
   }
 
-  Widget getMultiLineLoader(int lines) {
-    return Container(
-      color: Colors.grey[200],
-      height: lines.toDouble() * 50,
-      width: 300,
-    );
+  Widget getHorizontalCardLoader() {
+    return ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        physics: ClampingScrollPhysics(),
+        itemCount: 10,
+        itemBuilder: (BuildContext context, int index) {
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            // elevation: 2,
+            // color: Colors.transparent,
+            child: Container(
+              decoration: new BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              height: 120,
+              width: MediaQuery.of(context).size.width * 0.9,
+            ),
+          );
+        });
   }
 
   Widget getListLoader() {
@@ -115,7 +132,7 @@ class FancyLoader extends StatelessWidget {
             // color: Colors.transparent,
             child: Container(
               decoration: new BoxDecoration(
-                color: Colors.grey[200],
+                color: Colors.grey[300],
                 borderRadius: BorderRadius.circular(10),
               ),
               height: 100,
@@ -135,7 +152,7 @@ class FancyLoader extends StatelessWidget {
       itemBuilder: (context, index) {
         return Container(
           child: Card(
-            color: Colors.grey[200],
+            color: Colors.grey[300],
           ),
         );
       },
