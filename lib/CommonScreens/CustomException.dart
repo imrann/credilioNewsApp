@@ -13,6 +13,14 @@ class CustomException {
           throw new UnauthorisedException(
             response.statusCode.toString(),
           );
+        case 426:
+          throw new LimitReachedException(
+            response.statusCode.toString(),
+          );
+        case 429:
+          throw new TooManyRequestException(
+            response.statusCode.toString(),
+          );
         case 500:
           throw new InternalServerError(response.statusCode.toString());
         case 404:
@@ -48,12 +56,22 @@ class UnauthorisedException extends AppException {
   UnauthorisedException([message]) : super(message, "#Unauthorised: ");
 }
 
+class LimitReachedException extends AppException {
+  LimitReachedException([message])
+      : super(message, "#Limit Reached/Please upgrade!: ");
+}
+
 class InvalidInputException extends AppException {
   InvalidInputException([message]) : super(message, "#Invalid Input: ");
 }
 
 class InternalServerError extends AppException {
   InternalServerError([message, htmlTag]) : super(message, "#Server Error: ");
+}
+
+class TooManyRequestException extends AppException {
+  TooManyRequestException([message, htmlTag])
+      : super(message, "#Too many request, Please Upgrade plan!: ");
 }
 
 class FileNotFoundException extends AppException {

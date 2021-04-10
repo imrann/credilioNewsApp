@@ -15,8 +15,11 @@ class RouterGenerator {
         );
 
       case '/NewsArticle':
+        final NewsArticle args = settings.arguments;
         return MaterialPageRoute(
-          builder: (_) => NewsArticle(),
+          builder: (_) => NewsArticle(
+            newsUrl: args.newsUrl,
+          ),
         );
 
       default:

@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class NewsArticle extends StatefulWidget {
+  NewsArticle({this.newsUrl});
+
+  final String newsUrl;
+
   @override
   _NewsArticleState createState() => _NewsArticleState();
 }
@@ -54,8 +58,7 @@ class _NewsArticleState extends State<NewsArticle> {
                   onWebViewCreated: (WebViewController webViewController) {
                     _controller.complete(webViewController);
                   },
-                  initialUrl:
-                      "https://indianexpress.com/article/india/us-navy-freedom-of-navigation-operation-india-waters-without-consent-7265898/",
+                  initialUrl: widget.newsUrl,
                   javascriptMode: JavascriptMode.unrestricted,
                   // onWebViewCreated: (WebViewController c) {
                   //   _controller = c;

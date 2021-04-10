@@ -6,9 +6,9 @@ import 'package:credilio_news/Podo/BreakingNews.dart';
 import 'package:http/http.dart' as http;
 
 class BreakingNewsService {
-  Future<dynamic> getBreakingNews() async {
+  Future<dynamic> getBreakingNews(String nextPage) async {
     final String getBreakingNewsApi =
-        "https://newsapi.org/v2/top-headlines?country=in&pageSize=10&page=1&apiKey=d4f5d54d11444b56b6999bc8e73de88c";
+        "https://newsapi.org/v2/top-headlines?country=in&pageSize=10&page=$nextPage&apiKey=8385b1de635f4a4a99cb7c084b1405e8";
 
     Map<String, String> headers = {
       'Content-type': 'application/json',

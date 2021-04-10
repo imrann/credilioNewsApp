@@ -15,12 +15,20 @@ class CategoryNewsListState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /////////////////////////////////////////////////////////
+
   BreakingNews categoryNewsListState;
 
   BreakingNews getCategoryNewListState() => categoryNewsListState;
 
   setCategoryNewListState(BreakingNews categoryNewsListState) {
     this.categoryNewsListState = categoryNewsListState;
+
+    notifyListeners();
+  }
+
+  addCategoryNewListState(BreakingNews categoryNewsListState) {
+    this.categoryNewsListState.articles.addAll(categoryNewsListState.articles);
 
     notifyListeners();
   }

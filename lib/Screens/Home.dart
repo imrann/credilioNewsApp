@@ -6,8 +6,10 @@ import 'package:credilio_news/CommonScreens/FancyLoader.dart';
 import 'package:credilio_news/CommonScreens/NewsCategories.dart';
 import 'package:credilio_news/Controllers/HomeController.dart';
 import 'package:credilio_news/Podo/BreakingNews.dart';
+import 'package:credilio_news/Screens/NewsArticle.dart';
 import 'package:credilio_news/StateManager/BreakingNewListState.dart';
 import 'package:credilio_news/StateManager/CategoryNewsListState.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +25,24 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  ScrollController _controller = ScrollController();
+  ScrollController _breakingNewscontroller = ScrollController();
+  String selectedCategoryButton;
+  bool isPaginationActive;
+  bool isBreakingNewsPaginationActive;
+  int nextPageCount;
+  int breakingNewsNextPageCount;
 
   @override
   void initState() {
-    breakingNews = HomeController().getBreakingNews();
-    categoryNews = HomeController().getCategoryNews();
+    nextPageCount = 1;
+    breakingNewsNextPageCount = 1;
+    isPaginationActive = false;
+    isBreakingNewsPaginationActive = false;
+    selectedCategoryButton = NewsCategories.values[0].toString().substring(15);
+    breakingNews = HomeController().getBreakingNews("1");
+    categoryNews = HomeController().getCategoryNews(
+        NewsCategories.values[0].toString().substring(15).toUpperCase(), "1");
     breakingNews.then((value) {
       var breakingNewsListState =
           Provider.of<BreakingNewListState>(context, listen: false);
@@ -57,6 +72,113 @@ class _HomeState extends State<Home> {
     });
 
     super.initState();
+    _controller.addListener(_scrollListener);
+    _breakingNewscontroller.addListener(_breakingNewsScrollListener);
+  }
+
+  _scrollListener() async {
+    if (!isPaginationActive) {
+      print("filter NOT active");
+      double maxScroll = _controller.position.maxScrollExtent;
+      double currentScroll = _controller.position.pixels;
+      double delta = MediaQuery.of(context).size.height * 0.01;
+      if (maxScroll - currentScroll <= delta) {
+        //getPaginatedOrdersOnlyByType();
+        setState(() {
+          isPaginationActive = true;
+        });
+
+        getPaginatedData();
+        Future.delayed(Duration(seconds: 2), () {});
+      }
+    }
+  }
+
+  _breakingNewsScrollListener() async {
+    if (!isBreakingNewsPaginationActive) {
+      print("bfilter NOT active");
+      double maxScroll = _breakingNewscontroller.position.maxScrollExtent;
+      double currentScroll = _breakingNewscontroller.position.pixels;
+      double delta = MediaQuery.of(context).size.height * 0.01;
+      if (maxScroll - currentScroll <= delta) {
+        setState(() {
+          isBreakingNewsPaginationActive = true;
+        });
+
+        getBreakingNewsPaginatedData();
+        Future.delayed(Duration(seconds: 2), () {});
+      }
+    }
+  }
+
+  getBreakingNewsPaginatedData() {
+    int nextPage = ++breakingNewsNextPageCount;
+    print(nextPageCount.toString());
+    Future<dynamic> breakingpaginatedNews =
+        HomeController().getBreakingNews(nextPage.toString());
+
+    breakingpaginatedNews.then((value) {
+      BreakingNews nextPageNews = value;
+      if (nextPageNews.articles.length > 0) {
+        var categoryNewsListState =
+            Provider.of<BreakingNewListState>(context, listen: false);
+        categoryNewsListState.addBreakingNewListState(value);
+      } else {
+        Fluttertoast.showToast(
+            msg: "That's all folks!!",
+            fontSize: 10,
+            backgroundColor: Colors.black);
+      }
+      setState(() {
+        isBreakingNewsPaginationActive = false;
+      });
+    }).catchError((err) {
+      setState(() {
+        isBreakingNewsPaginationActive = false;
+      });
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          "$err",
+          textAlign: TextAlign.center,
+        ),
+        duration: Duration(seconds: 3),
+      ));
+    });
+  }
+
+  getPaginatedData() {
+    int nextPage = ++nextPageCount;
+    print(nextPageCount.toString());
+    Future<dynamic> categorypaginatedNews = HomeController().getCategoryNews(
+        selectedCategoryButton.toUpperCase(), nextPage.toString());
+
+    categorypaginatedNews.then((value) {
+      BreakingNews nextPageNews = value;
+      if (nextPageNews.articles.length > 0) {
+        var categoryNewsListState =
+            Provider.of<CategoryNewsListState>(context, listen: false);
+        categoryNewsListState.addCategoryNewListState(value);
+      } else {
+        Fluttertoast.showToast(
+            msg: "That's all folks!!",
+            fontSize: 10,
+            backgroundColor: Colors.black);
+      }
+      setState(() {
+        isPaginationActive = false;
+      });
+    }).catchError((err) {
+      setState(() {
+        isPaginationActive = false;
+      });
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          "$err",
+          textAlign: TextAlign.center,
+        ),
+        duration: Duration(seconds: 3),
+      ));
+    });
   }
 
   Future<bool> _onBackPressed() {
@@ -123,6 +245,10 @@ class _HomeState extends State<Home> {
 
   getNews() {
     return SingleChildScrollView(
+      padding: const EdgeInsets.only(
+        bottom: kMiniButtonOffsetAdjustment + 100,
+      ),
+      controller: _controller,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,81 +297,116 @@ class _HomeState extends State<Home> {
                               breaking.getBreakingNewListState();
 
                           if (breakingNewsList.articles.length != 0) {
-                            return ListView.builder(
-                                shrinkWrap: true,
-                                physics: ClampingScrollPhysics(),
-                                scrollDirection: Axis.horizontal,
-                                itemCount: breakingNewsList.articles.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      // elevation: 2,
-                                      // color: Colors.transparent,
-                                      child: Container(
-                                        decoration: new BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                        ),
-                                        height: 400,
-                                        width: 300,
-                                        child: Stack(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.vertical(
-                                                      bottom:
-                                                          Radius.circular(30),
-                                                      top: Radius.circular(30)),
-                                              child: new FadeInImage
-                                                      .memoryNetwork(
-                                                  fit: BoxFit.fill,
-                                                  placeholder:
-                                                      kTransparentImage,
-                                                  width: double.infinity,
-                                                  height: double.infinity,
-                                                  image: breakingNewsList
-                                                          .articles[index]
-                                                          .urlToImage ??
-                                                      "https://media.istockphoto.com/vectors/image-preview-icon-picture-placeholder-for-website-or-uiux-design-vector-id1222357475?k=6&m=1222357475&s=612x612&w=0&h=p8Qv0TLeMRxaES5FNfb09jK3QkJrttINH2ogIBXZg-c="),
+                            return Row(
+                              //  mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: ListView.builder(
+                                      controller: _breakingNewscontroller,
+                                      shrinkWrap: true,
+                                      physics: ClampingScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount:
+                                          breakingNewsList.articles.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 10),
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.of(context).pushNamed(
+                                                  '/NewsArticle',
+                                                  arguments: NewsArticle(
+                                                    newsUrl: breakingNewsList
+                                                        .articles[index].url
+                                                        .toString(),
+                                                  ));
+                                            },
+                                            child: Card(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                              ),
+                                              // elevation: 2,
+                                              // color: Colors.transparent,
+                                              child: Container(
+                                                decoration: new BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                ),
+                                                height: 400,
+                                                width: 300,
+                                                child: Stack(
+                                                  children: [
+                                                    ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.vertical(
+                                                              bottom: Radius
+                                                                  .circular(30),
+                                                              top: Radius
+                                                                  .circular(
+                                                                      30)),
+                                                      child: new FadeInImage
+                                                              .memoryNetwork(
+                                                          fit: BoxFit.fill,
+                                                          placeholder:
+                                                              kTransparentImage,
+                                                          width:
+                                                              double.infinity,
+                                                          height:
+                                                              double.infinity,
+                                                          image: breakingNewsList
+                                                                  .articles[
+                                                                      index]
+                                                                  .urlToImage ??
+                                                              "https://media.istockphoto.com/vectors/image-preview-icon-picture-placeholder-for-website-or-uiux-design-vector-id1222357475?k=6&m=1222357475&s=612x612&w=0&h=p8Qv0TLeMRxaES5FNfb09jK3QkJrttINH2ogIBXZg-c="),
+                                                    ),
+                                                    // Positioned(
+                                                    //     top: 5,
+                                                    //     right: 5,
+                                                    //     child: Container(
+                                                    //       color: (productList[index]
+                                                    //                       .productData
+                                                    //                       .productNetWeight ==
+                                                    //                   "") &&
+                                                    //               (productList[index]
+                                                    //                       .productData
+                                                    //                       .productUnit ==
+                                                    //                   "")
+                                                    //           ? Colors.transparent
+                                                    //           : Colors.pink[900],
+                                                    //       child: Text(
+                                                    //         productList[index]
+                                                    //                 .productData
+                                                    //                 .productNetWeight +
+                                                    //             "  " +
+                                                    //             productList[index]
+                                                    //                 .productData
+                                                    //                 .productUnit,
+                                                    //         style: TextStyle(
+                                                    //             fontSize: 10,
+                                                    //             color: Colors.white),
+                                                    //       ),
+                                                    //     )),
+                                                  ],
+                                                ),
+                                              ),
                                             ),
-                                            // Positioned(
-                                            //     top: 5,
-                                            //     right: 5,
-                                            //     child: Container(
-                                            //       color: (productList[index]
-                                            //                       .productData
-                                            //                       .productNetWeight ==
-                                            //                   "") &&
-                                            //               (productList[index]
-                                            //                       .productData
-                                            //                       .productUnit ==
-                                            //                   "")
-                                            //           ? Colors.transparent
-                                            //           : Colors.pink[900],
-                                            //       child: Text(
-                                            //         productList[index]
-                                            //                 .productData
-                                            //                 .productNetWeight +
-                                            //             "  " +
-                                            //             productList[index]
-                                            //                 .productData
-                                            //                 .productUnit,
-                                            //         style: TextStyle(
-                                            //             fontSize: 10,
-                                            //             color: Colors.white),
-                                            //       ),
-                                            //     )),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                });
+                                          ),
+                                        );
+                                      }),
+                                ),
+                                isBreakingNewsPaginationActive
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 10, right: 10),
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : SizedBox()
+                              ],
+                            );
                           } else {
                             return Center(child: Text("0 Search Result!"));
                           }
@@ -274,8 +435,37 @@ class _HomeState extends State<Home> {
                           const EdgeInsets.only(left: 15, bottom: 10, top: 10),
                       child: Container(
                         child: TextButton(
+                          style: TextButton.styleFrom(),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/NewsArticle');
+                            setState(() {
+                              nextPageCount = 1;
+                              selectedCategoryButton = NewsCategories
+                                  .values[index]
+                                  .toString()
+                                  .substring(15);
+                            });
+                            categoryNews = HomeController().getCategoryNews(
+                                NewsCategories.values[index]
+                                    .toString()
+                                    .substring(15)
+                                    .toUpperCase(),
+                                "1");
+
+                            categoryNews.then((value) {
+                              var categoryNewsListState =
+                                  Provider.of<CategoryNewsListState>(context,
+                                      listen: false);
+                              categoryNewsListState
+                                  .setCategoryNewListState(value);
+                            }).catchError((err) {
+                              scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text(
+                                  "$err",
+                                  textAlign: TextAlign.center,
+                                ),
+                                duration: Duration(seconds: 3),
+                              ));
+                            });
                           },
                           child: Text(
                             NewsCategories.values[index]
@@ -284,8 +474,13 @@ class _HomeState extends State<Home> {
                                 .toUpperCase(),
                             style: TextStyle(
                                 letterSpacing: -1,
-                                color: Colors.grey[300],
-                                fontSize: 20.0,
+                                color: selectedCategoryButton ==
+                                        (NewsCategories.values[index]
+                                            .toString()
+                                            .substring(15))
+                                    ? Colors.redAccent
+                                    : Colors.grey[300],
+                                fontSize: 15.0,
                                 fontWeight: FontWeight.bold,
                                 fontStyle: FontStyle.normal),
                           ),
@@ -338,6 +533,7 @@ class _HomeState extends State<Home> {
                                   });
                             } else {
                               return GridView.builder(
+                                // controller: _controller,
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
                                 gridDelegate:
@@ -371,65 +567,93 @@ class _HomeState extends State<Home> {
                   }),
             ),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              isPaginationActive
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 10, bottom: 50),
+                      child: CircularProgressIndicator(),
+                    )
+                  : SizedBox()
+            ],
+          )
         ],
       ),
     );
   }
 
   getListViewCategoryNews(BreakingNews categoryNewsList, int index) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      color: Colors.transparent,
-      child: Container(
-        decoration: new BoxDecoration(
-          color: Colors.white,
+    return InkWell(
+      onTap: () {
+        print("URLLLLLL  " + categoryNewsList.articles[index].url.toString());
+        Navigator.of(context).pushNamed('/NewsArticle',
+            arguments: NewsArticle(
+              newsUrl: categoryNewsList.articles[index].url.toString(),
+            ));
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        height: 100,
-        width: MediaQuery.of(context).size.width,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(10), top: Radius.circular(10)),
-              child: new FadeInImage.memoryNetwork(
-                  fit: BoxFit.fill,
-                  placeholder: kTransparentImage,
-                  width: MediaQuery.of(context).size.width * 0.3,
-                  height: double.infinity,
-                  image: categoryNewsList.articles[index].urlToImage ??
-                      "https://media.istockphoto.com/vectors/image-preview-icon-picture-placeholder-for-website-or-uiux-design-vector-id1222357475?k=6&m=1222357475&s=612x612&w=0&h=p8Qv0TLeMRxaES5FNfb09jK3QkJrttINH2ogIBXZg-c="),
-            ),
-          ],
+        color: Colors.transparent,
+        child: Container(
+          decoration: new BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          height: 100,
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(10), top: Radius.circular(10)),
+                child: new FadeInImage.memoryNetwork(
+                    fit: BoxFit.fill,
+                    placeholder: kTransparentImage,
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    height: double.infinity,
+                    image: categoryNewsList.articles[index].urlToImage ??
+                        "https://media.istockphoto.com/vectors/image-preview-icon-picture-placeholder-for-website-or-uiux-design-vector-id1222357475?k=6&m=1222357475&s=612x612&w=0&h=p8Qv0TLeMRxaES5FNfb09jK3QkJrttINH2ogIBXZg-c="),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   getGridViewCategoryNews(BreakingNews categoryNewsList, int index) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      color: Colors.transparent,
-      child: Container(
-        decoration: new BoxDecoration(
-          color: Colors.white,
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pushNamed('/NewsArticle',
+            arguments: NewsArticle(
+              newsUrl: categoryNewsList.articles[index].url.toString(),
+            ));
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(10), top: Radius.circular(10)),
-          child: new FadeInImage.memoryNetwork(
-              fit: BoxFit.fill,
-              placeholder: kTransparentImage,
-              width: double.infinity,
-              height: double.infinity,
-              image: categoryNewsList.articles[index].urlToImage ??
-                  "https://media.istockphoto.com/vectors/image-preview-icon-picture-placeholder-for-website-or-uiux-design-vector-id1222357475?k=6&m=1222357475&s=612x612&w=0&h=p8Qv0TLeMRxaES5FNfb09jK3QkJrttINH2ogIBXZg-c="),
+        color: Colors.transparent,
+        child: Container(
+          decoration: new BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(10), top: Radius.circular(10)),
+            child: new FadeInImage.memoryNetwork(
+                fit: BoxFit.fill,
+                placeholder: kTransparentImage,
+                width: double.infinity,
+                height: double.infinity,
+                image: categoryNewsList.articles[index].urlToImage ??
+                    "https://media.istockphoto.com/vectors/image-preview-icon-picture-placeholder-for-website-or-uiux-design-vector-id1222357475?k=6&m=1222357475&s=612x612&w=0&h=p8Qv0TLeMRxaES5FNfb09jK3QkJrttINH2ogIBXZg-c="),
+          ),
         ),
       ),
     );

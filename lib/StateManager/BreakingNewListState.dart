@@ -11,4 +11,10 @@ class BreakingNewListState extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  addBreakingNewListState(BreakingNews breakingNewsListState) {
+    this.breakingNewsListState.articles.addAll(breakingNewsListState.articles);
+
+    notifyListeners();
+  }
 }
