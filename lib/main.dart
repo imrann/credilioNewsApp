@@ -1,6 +1,7 @@
 import 'package:credilio_news/StateManager/BreakingNewListState.dart';
 import 'package:credilio_news/StateManager/CategoryNewsListState.dart';
 import 'package:credilio_news/StateManager/WebViewDetailsState.dart';
+import 'package:flutter_config/flutter_config.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,8 +9,10 @@ import 'package:provider/provider.dart';
 
 import 'CommonScreens/RouterGenerator.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await FlutterConfig.loadEnvVariables();
+  print("KEYYYYYYYYY   :" + FlutterConfig.get('API_KEY').toString());
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, // transparent status bar
   ));

@@ -63,8 +63,10 @@ class _AppBarCommonState extends State<AppBarCommon> {
           : getTitle(title: widget.title, subTitle: widget.subTitle),
       actions: <Widget>[
         SizedBox(width: 5),
-        getIcon(widget.profileIcon, context, widget.route,
-            widget.notificationCount),
+        l_isSearch != null
+            ? SizedBox()
+            : getIcon(widget.profileIcon, context, widget.route,
+                widget.notificationCount),
         l_isSearch != null
             ? getIcon(Icons.close, context, null, null)
             : getIcon(widget.trailingIcon, context, widget.route,
