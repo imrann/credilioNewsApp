@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 class CategoryNewsService {
   Future<dynamic> getCategoryNews(String category, String nextPage) async {
     final String getCategoryNewsApi =
-        "https://newsapi.org/v2/top-headlines?country=in&pageSize=10&page=$nextPage&category=$category&apiKey=8385b1de635f4a4a99cb7c084b1405e8";
+        "https://newsapi.org/v2/top-headlines?country=in&pageSize=10&page=$nextPage&category=$category&apiKey=82eee72d769f44d89d4fb26881840e87";
 
     Map<String, String> headers = {
       'Content-type': 'application/json',

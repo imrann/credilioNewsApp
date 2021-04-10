@@ -1,5 +1,7 @@
 import 'package:credilio_news/StateManager/BreakingNewListState.dart';
 import 'package:credilio_news/StateManager/CategoryNewsListState.dart';
+import 'package:credilio_news/StateManager/WebViewDetailsState.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +40,7 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (context) => CategoryNewsListState()),
           ChangeNotifierProvider(create: (context) => BreakingNewListState()),
+          ChangeNotifierProvider(create: (context) => WebViewDetailsState()),
         ],
         child: MaterialApp(
           onGenerateRoute: RouterGenerator.generateRoute,

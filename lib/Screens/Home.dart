@@ -412,33 +412,169 @@ class _HomeState extends State<Home> {
                                                                   .urlToImage ??
                                                               "https://media.istockphoto.com/vectors/image-preview-icon-picture-placeholder-for-website-or-uiux-design-vector-id1222357475?k=6&m=1222357475&s=612x612&w=0&h=p8Qv0TLeMRxaES5FNfb09jK3QkJrttINH2ogIBXZg-c="),
                                                     ),
-                                                    // Positioned(
-                                                    //     top: 5,
-                                                    //     right: 5,
-                                                    //     child: Container(
-                                                    //       color: (productList[index]
-                                                    //                       .productData
-                                                    //                       .productNetWeight ==
-                                                    //                   "") &&
-                                                    //               (productList[index]
-                                                    //                       .productData
-                                                    //                       .productUnit ==
-                                                    //                   "")
-                                                    //           ? Colors.transparent
-                                                    //           : Colors.pink[900],
-                                                    //       child: Text(
-                                                    //         productList[index]
-                                                    //                 .productData
-                                                    //                 .productNetWeight +
-                                                    //             "  " +
-                                                    //             productList[index]
-                                                    //                 .productData
-                                                    //                 .productUnit,
-                                                    //         style: TextStyle(
-                                                    //             fontSize: 10,
-                                                    //             color: Colors.white),
-                                                    //       ),
-                                                    //     )),
+                                                    Positioned(
+                                                      bottom: 0,
+                                                      right: 0,
+                                                      left: 0,
+                                                      child: Container(
+                                                        decoration:
+                                                            new BoxDecoration(
+                                                          color: Colors.black38,
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  bottomLeft: Radius
+                                                                      .circular(
+                                                                          30),
+                                                                  bottomRight: Radius
+                                                                      .circular(
+                                                                          30)),
+                                                        ),
+                                                        width: double.infinity,
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.25,
+                                                        child: Column(
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Flexible(
+                                                                  child:
+                                                                      Container(
+                                                                    width: double
+                                                                        .infinity,
+                                                                    child:
+                                                                        Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              8.0),
+                                                                      child: Text(
+                                                                          breakingNewsList
+                                                                              .articles[
+                                                                                  index]
+                                                                              .title
+                                                                              .toString(),
+                                                                          overflow: TextOverflow
+                                                                              .fade,
+                                                                          softWrap:
+                                                                              true,
+                                                                          maxLines:
+                                                                              4,
+                                                                          style: TextStyle(
+                                                                              fontSize: 17,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Colors.white)),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Flexible(
+                                                                  child:
+                                                                      Container(
+                                                                    width: double
+                                                                        .infinity,
+                                                                    child:
+                                                                        Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              8.0),
+                                                                      child: Text(
+                                                                          breakingNewsList.articles[index].description ??
+                                                                              "No Description",
+                                                                          overflow: TextOverflow
+                                                                              .fade,
+                                                                          softWrap:
+                                                                              true,
+                                                                          maxLines:
+                                                                              4,
+                                                                          style: TextStyle(
+                                                                              fontSize: 10,
+                                                                              color: Colors.grey[300])),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Flexible(
+                                                                  child:
+                                                                      Container(
+                                                                    width: double
+                                                                        .infinity,
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .only(
+                                                                          left:
+                                                                              8,
+                                                                          right:
+                                                                              8,
+                                                                          top:
+                                                                              15),
+                                                                      child: Text(
+                                                                          breakingNewsList.articles[index].source.name ??
+                                                                              ""
+                                                                                  .toString(),
+                                                                          overflow: TextOverflow
+                                                                              .fade,
+                                                                          softWrap:
+                                                                              true,
+                                                                          maxLines:
+                                                                              4,
+                                                                          style: TextStyle(
+                                                                              fontSize: 11,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Colors.white)),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                      top: 10,
+                                                      right: 10,
+                                                      child: Container(
+                                                        color: Colors.black38,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(5),
+                                                          child: Text(
+                                                              breakingNewsList
+                                                                      .articles[
+                                                                          index]
+                                                                      .publishedAt
+                                                                      .substring(
+                                                                          0,
+                                                                          10) ??
+                                                                  "".toString(),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .fade,
+                                                              softWrap: true,
+                                                              maxLines: 4,
+                                                              style: TextStyle(
+                                                                  fontSize: 11,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: Colors
+                                                                      .white)),
+                                                        ),
+                                                      ),
+                                                    )
                                                   ],
                                                 ),
                                               ),
@@ -539,7 +675,7 @@ class _HomeState extends State<Home> {
                   }),
             ),
             content: Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10),
+              padding: const EdgeInsets.only(left: 10, right: 5),
               child: FutureBuilder<dynamic>(
                   future: categoryNews,
                   builder:
@@ -635,7 +771,6 @@ class _HomeState extends State<Home> {
   getListViewCategoryNews(BreakingNews categoryNewsList, int index) {
     return InkWell(
       onTap: () {
-        print("URLLLLLL  " + categoryNewsList.articles[index].url.toString());
         Navigator.of(context).pushNamed('/NewsArticle',
             arguments: NewsArticle(
               newsUrl: categoryNewsList.articles[index].url.toString(),
@@ -654,7 +789,7 @@ class _HomeState extends State<Home> {
           height: 100,
           width: MediaQuery.of(context).size.width,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            //mainAxisAlignment: MainAxisAlignment.start,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.vertical(
@@ -667,6 +802,63 @@ class _HomeState extends State<Home> {
                     image: categoryNewsList.articles[index].urlToImage ??
                         "https://media.istockphoto.com/vectors/image-preview-icon-picture-placeholder-for-website-or-uiux-design-vector-id1222357475?k=6&m=1222357475&s=612x612&w=0&h=p8Qv0TLeMRxaES5FNfb09jK3QkJrttINH2ogIBXZg-c="),
               ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8, right: 8, top: 5),
+                      child: Text(
+                          categoryNewsList.articles[index].title ??
+                              "".toString(),
+                          overflow: TextOverflow.fade,
+                          softWrap: true,
+                          maxLines: 3,
+                          style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black)),
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8, right: 8, top: 5, bottom: 5),
+                        child: Text(
+                          categoryNewsList.articles[index].source.name
+                                  .toString() ??
+                              "",
+                          overflow: TextOverflow.fade,
+                          softWrap: true,
+                          maxLines: 3,
+                          style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[350]),
+                        )),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8, right: 8, top: 5, bottom: 5),
+                        child: Text(
+                          categoryNewsList.articles[index].publishedAt
+                                  .substring(0, 10) ??
+                              "".toString(),
+                          overflow: TextOverflow.fade,
+                          softWrap: true,
+                          maxLines: 3,
+                          style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[300]),
+                        )),
+                  ),
+                ],
+              )
             ],
           ),
         ),

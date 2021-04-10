@@ -10,10 +10,10 @@ class BreakingNewsService {
     String getBreakingNewsApi;
     if (searchText.trim().isEmpty) {
       getBreakingNewsApi =
-          "https://newsapi.org/v2/top-headlines?country=in&pageSize=10&page=$nextPage&apiKey=8385b1de635f4a4a99cb7c084b1405e8";
+          "https://newsapi.org/v2/top-headlines?country=in&pageSize=10&page=$nextPage&apiKey=82eee72d769f44d89d4fb26881840e87";
     } else {
       getBreakingNewsApi =
-          "https://newsapi.org/v2/top-headlines?q=$searchText&country=in&pageSize=10&page=$nextPage&apiKey=8385b1de635f4a4a99cb7c084b1405e8";
+          "https://newsapi.org/v2/top-headlines?q=$searchText&country=in&pageSize=10&page=$nextPage&apiKey=82eee72d769f44d89d4fb26881840e87";
     }
 
     Map<String, String> headers = {

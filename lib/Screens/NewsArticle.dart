@@ -3,8 +3,12 @@ import 'dart:async';
 import 'package:credilio_news/CommonScreens/AppBarCommon.dart';
 import 'package:credilio_news/CommonScreens/FancyLoader.dart';
 import 'package:credilio_news/Screens/RelatedNewsArticles.dart';
+import 'package:credilio_news/StateManager/WebViewDetailsState.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+typedef loadURL = String Function(String);
 
 class NewsArticle extends StatefulWidget {
   NewsArticle({this.newsUrl});
@@ -18,8 +22,8 @@ class NewsArticle extends StatefulWidget {
 class _NewsArticleState extends State<NewsArticle> {
   bool isLoading;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
+
+  WebViewController controller;
 
   @override
   void initState() {
@@ -35,7 +39,9 @@ class _NewsArticleState extends State<NewsArticle> {
       extendBodyBehindAppBar: true,
       appBar: null,
       body: getWebView(),
-      bottomNavigationBar: RelatedNewsArticles(),
+      bottomNavigationBar: RelatedNewsArticles(
+        loadurl: loadURL,
+      ),
     );
   }
 
@@ -50,24 +56,30 @@ class _NewsArticleState extends State<NewsArticle> {
             child: Center(
               child: Container(
                 child: WebView(
+                  initialMediaPlaybackPolicy:
+                      AutoMediaPlaybackPolicy.always_allow,
                   onPageFinished: (_) {
                     setState(() {
                       isLoading = false;
                     });
                   },
                   onWebViewCreated: (WebViewController webViewController) {
-                    _controller.complete(webViewController);
+                    controller = webViewController;
                   },
                   initialUrl: widget.newsUrl,
                   javascriptMode: JavascriptMode.unrestricted,
-                  // onWebViewCreated: (WebViewController c) {
-                  //   _controller = c;
-                  // },
                 ),
               ),
             )),
         isLoading ? Center(child: CircularProgressIndicator()) : Container(),
       ],
     );
+  }
+
+  loadURL(s) {
+    controller.loadUrl(s);
+    setState(() {
+      isLoading = true;
+    });
   }
 }
