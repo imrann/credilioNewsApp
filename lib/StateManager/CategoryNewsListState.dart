@@ -1,3 +1,4 @@
+import 'package:credilio_news/Podo/BreakingNews.dart';
 import 'package:flutter/material.dart';
 
 class CategoryNewsListState extends ChangeNotifier {
@@ -10,6 +11,16 @@ class CategoryNewsListState extends ChangeNotifier {
     } else {
       this.toggleCategoryNewsView = true;
     }
+
+    notifyListeners();
+  }
+
+  BreakingNews categoryNewsListState;
+
+  BreakingNews getCategoryNewListState() => categoryNewsListState;
+
+  setCategoryNewListState(BreakingNews categoryNewsListState) {
+    this.categoryNewsListState = categoryNewsListState;
 
     notifyListeners();
   }

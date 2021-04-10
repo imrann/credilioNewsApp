@@ -8,7 +8,7 @@ class BreakingNewListState extends ChangeNotifier {
 
   setBreakingNewListState(BreakingNews breakingNewsListState) {
     this.breakingNewsListState = breakingNewsListState;
-    print("sssss :" + this.breakingNewsListState.toString());
+
     notifyListeners();
   }
 }
