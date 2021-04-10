@@ -17,4 +17,25 @@ class BreakingNewListState extends ChangeNotifier {
 
     notifyListeners();
   }
+
+///////////////////////////////////////////////////////////
+
+  bool isSearchActive = false;
+  bool getIsSearchActive() => isSearchActive;
+
+  setIsSearchActive(bool isSearchActive) {
+    this.isSearchActive = isSearchActive;
+
+    notifyListeners();
+  }
+  ////////////////////////////////////////////////////////////
+
+  String searchParam = "";
+  String getSearchParam() => searchParam;
+
+  setSearchParam(String searchParam) {
+    this.searchParam = searchParam;
+
+    notifyListeners();
+  }
 }

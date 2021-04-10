@@ -40,7 +40,7 @@ class _HomeState extends State<Home> {
     isPaginationActive = false;
     isBreakingNewsPaginationActive = false;
     selectedCategoryButton = NewsCategories.values[0].toString().substring(15);
-    breakingNews = HomeController().getBreakingNews("1");
+    breakingNews = HomeController().getBreakingNews("1", "");
     categoryNews = HomeController().getCategoryNews(
         NewsCategories.values[0].toString().substring(15).toUpperCase(), "1");
     breakingNews.then((value) {
@@ -112,10 +112,18 @@ class _HomeState extends State<Home> {
   }
 
   getBreakingNewsPaginatedData() {
+    var searchDetails =
+        Provider.of<BreakingNewListState>(context, listen: false);
+    if (searchDetails.getIsSearchActive() &&
+        (searchDetails.getSearchParam() == "")) {
+      breakingNewsNextPageCount = 1;
+    }
     int nextPage = ++breakingNewsNextPageCount;
-    print(nextPageCount.toString());
-    Future<dynamic> breakingpaginatedNews =
-        HomeController().getBreakingNews(nextPage.toString());
+    Future<dynamic> breakingpaginatedNews = HomeController().getBreakingNews(
+        nextPage.toString(),
+        searchDetails.getIsSearchActive()
+            ? searchDetails.getSearchParam()
+            : "");
 
     breakingpaginatedNews.then((value) {
       BreakingNews nextPageNews = value;
@@ -254,17 +262,58 @@ class _HomeState extends State<Home> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 15, top: 0),
-            child: Text(
-              "Breaking News",
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  letterSpacing: -1,
-                  color: Colors.black,
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.normal),
-            ),
+            padding: const EdgeInsets.only(left: 15, top: 0, right: 15),
+            child:
+                Consumer<BreakingNewListState>(builder: (context, data, child) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    data.getIsSearchActive()
+                        ? "Searched Results"
+                        : "Breaking News",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        letterSpacing: -1,
+                        color: Colors.black,
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.normal),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      breakingNews = HomeController().getBreakingNews("1", "");
+                      breakingNews.then((value) {
+                        var breakingNewsListState =
+                            Provider.of<BreakingNewListState>(context,
+                                listen: false);
+                        breakingNewsListState.setBreakingNewListState(value);
+                        breakingNewsListState.setIsSearchActive(false);
+                        breakingNewsNextPageCount = 1;
+                      }).catchError((err) {
+                        print("$err");
+                      });
+                    },
+                    child: Container(
+                      color: Colors.greenAccent,
+                      child: Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Text(
+                          data.getIsSearchActive() ? "Breaking News" : "",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              letterSpacing: -1,
+                              color: Colors.black,
+                              fontSize: 10.0,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 10, top: 10),
@@ -540,7 +589,7 @@ class _HomeState extends State<Home> {
                                     SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 2,
                                         childAspectRatio: 0.7),
-                                itemCount: 10,
+                                itemCount: categoryNewsList.articles.length,
                                 itemBuilder: (context, index) {
                                   return Container(
                                     child: getGridViewCategoryNews(

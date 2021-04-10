@@ -1,5 +1,9 @@
+import 'package:credilio_news/Controllers/HomeController.dart';
+import 'package:credilio_news/Screens/Home.dart';
+import 'package:credilio_news/StateManager/BreakingNewListState.dart';
 import 'package:credilio_news/StateManager/CategoryNewsListState.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:provider/provider.dart';
 
@@ -67,8 +71,9 @@ class _AppBarCommonState extends State<AppBarCommon> {
                 widget.notificationCount),
       ],
       bottomOpacity: 1,
-      backgroundColor:
-          widget.searchOwner == "pDetails" ? Colors.transparent : Colors.white,
+      backgroundColor: widget.searchOwner == "topHeadLinesSearch"
+          ? Colors.transparent
+          : Colors.white,
       brightness: Brightness.light,
     );
   }
@@ -89,10 +94,44 @@ class _AppBarCommonState extends State<AppBarCommon> {
         hintStyle: TextStyle(color: Colors.grey[400], fontSize: 15),
       ),
       keyboardType: TextInputType.text,
-      onChanged: (text) {
-        // searchStart(dynamicSearchText: text, listAllData: false);
+      onFieldSubmitted: (text) {
+        searchStart(searchText: text, listAllData: false);
       },
     );
+  }
+
+  searchStart({String searchText, bool listAllData}) {
+    switch (widget.searchOwner) {
+      case "topHeadLinesSearch":
+        {
+          setState(() {
+            if (searchText == "" || searchText.isEmpty) {
+              Fluttertoast.showToast(
+                  msg: "Empty search!!",
+                  fontSize: 10,
+                  backgroundColor: Colors.black);
+            } else {
+              breakingNews = HomeController().getBreakingNews("1", searchText);
+              breakingNews.then((value) {
+                var breakingNewsListState =
+                    Provider.of<BreakingNewListState>(context, listen: false);
+                breakingNewsListState.setBreakingNewListState(value);
+                breakingNewsListState.setIsSearchActive(true);
+                breakingNewsListState.setSearchParam(searchText);
+              }).catchError((err) {
+                print("$err");
+              });
+            }
+          });
+        }
+        break;
+
+      default:
+        {
+          //progressDialog.hide();
+        }
+        break;
+    }
   }
 
   PreferredSizeWidget getTabBar({bool isTabBar}) {
