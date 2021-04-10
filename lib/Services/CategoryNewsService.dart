@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:credilio_news/CommonScreens/CustomException.dart';
+import 'package:credilio_news/CommonScreens/AppConfig.dart';
+
 import 'package:credilio_news/Podo/BreakingNews.dart';
-import 'package:flutter_config/flutter_config.dart';
 import 'package:http/http.dart' as http;
 
 class CategoryNewsService {
@@ -13,7 +14,7 @@ class CategoryNewsService {
 
     Map<String, String> headers = {
       'Content-type': 'application/json',
-      'Authorization': 'Bearer ' + FlutterConfig.get('API_KEY')
+      'Authorization': 'Bearer ' + AppConfig().apikey
     };
     BreakingNews posts = new BreakingNews();
     try {
