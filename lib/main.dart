@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => CategoryNewsListState()),
+          ChangeNotifierProvider(create: (context) => BreakingNewListState()),
         ],
         child: MaterialApp(
           onGenerateRoute: RouterGenerator.generateRoute,

@@ -4,10 +4,16 @@ import 'package:credilio_news/CommonScreens/AppBarCommon.dart';
 import 'package:credilio_news/CommonScreens/ErrorPage.dart';
 import 'package:credilio_news/CommonScreens/FancyLoader.dart';
 import 'package:credilio_news/CommonScreens/NewsCategories.dart';
+import 'package:credilio_news/Controllers/HomeController.dart';
+import 'package:credilio_news/Podo/BreakingNews.dart';
+import 'package:credilio_news/StateManager/BreakingNewListState.dart';
 import 'package:credilio_news/StateManager/CategoryNewsListState.dart';
 import 'package:provider/provider.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
+
+Future<dynamic> breakingNews;
 
 class Home extends StatefulWidget {
   @override
@@ -19,6 +25,21 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    breakingNews = HomeController().getBreakingNews();
+    breakingNews.then((value) {
+      var breakingNewsListState =
+          Provider.of<BreakingNewListState>(context, listen: false);
+      breakingNewsListState.setBreakingNewListState(value);
+    }).catchError((err) {
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(
+          "$err",
+          textAlign: TextAlign.center,
+        ),
+        duration: Duration(seconds: 3),
+      ));
+    });
+
     super.initState();
   }
 
@@ -108,47 +129,117 @@ class _HomeState extends State<Home> {
             child: SizedBox(
               height: 450,
               child: FutureBuilder<dynamic>(
-                  future: Future.delayed(Duration(seconds: 5), () {}),
+                  future: breakingNews,
                   builder:
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    // if (snapshot.hasError) {
-                    //   final error = snapshot.error;
+                    if (snapshot.hasError) {
+                      final error = snapshot.error;
+                      print(error.toString());
 
-                    //   return ErrorPage(error: error.toString());
-                    // } else if (snapshot.hasData) {
-                    //   return ListView.builder(
-                    //       shrinkWrap: true,
-                    //       physics: ClampingScrollPhysics(),
-                    //       scrollDirection: Axis.horizontal,
-                    //       itemCount: 30,
-                    //       itemBuilder: (BuildContext context, int index) {
-                    //         return Padding(
-                    //           padding: const EdgeInsets.only(right: 10),
-                    //           child: Card(
-                    //             shape: RoundedRectangleBorder(
-                    //               borderRadius: BorderRadius.circular(30),
-                    //             ),
-                    //             // elevation: 2,
-                    //             // color: Colors.transparent,
-                    //             child: Container(
-                    //               decoration: new BoxDecoration(
-                    //                 color: Colors.blueGrey,
-                    //                 borderRadius: BorderRadius.circular(30),
-                    //               ),
-                    //               height: 400,
-                    //               width: 300,
-                    //             ),
-                    //           ),
-                    //         );
-                    //       });
-                    // } else {
-                    //   return FancyLoader(
-                    //     loaderType: "MainGrid",
-                    //   );
-                    // }
-                    return FancyLoader(
-                      loaderType: "MainGrid",
-                    );
+                      return ErrorPage(error: "Something Went Wrong!");
+                    } else if (snapshot.hasData) {
+                      BreakingNews data = snapshot.data;
+
+                      if (data.articles.isEmpty || data.articles.length == 0) {
+                        return Center(
+                          child: Text("No News Available!",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  //fontWeight: FontWeight.bold,
+                                  fontSize: 15)),
+                        );
+                      } else {
+                        return Consumer<BreakingNewListState>(
+                            builder: (context, breaking, child) {
+                          BreakingNews breakingNewsList =
+                              breaking.getBreakingNewListState();
+
+                          if (breakingNewsList.articles.length != 0) {
+                            return ListView.builder(
+                                shrinkWrap: true,
+                                physics: ClampingScrollPhysics(),
+                                scrollDirection: Axis.horizontal,
+                                itemCount: breakingNewsList.articles.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      // elevation: 2,
+                                      // color: Colors.transparent,
+                                      child: Container(
+                                        decoration: new BoxDecoration(
+                                          color: Colors.blueGrey,
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                        height: 400,
+                                        width: 300,
+                                        child: Stack(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                      bottom:
+                                                          Radius.circular(30),
+                                                      top: Radius.circular(30)),
+                                              child: new FadeInImage
+                                                      .memoryNetwork(
+                                                  fit: BoxFit.fill,
+                                                  placeholder:
+                                                      kTransparentImage,
+                                                  width: double.infinity,
+                                                  height: double.infinity,
+                                                  image: breakingNewsList
+                                                          .articles[index]
+                                                          .urlToImage ??
+                                                      "https://media.istockphoto.com/vectors/image-preview-icon-picture-placeholder-for-website-or-uiux-design-vector-id1222357475?k=6&m=1222357475&s=612x612&w=0&h=p8Qv0TLeMRxaES5FNfb09jK3QkJrttINH2ogIBXZg-c="),
+                                            ),
+                                            // Positioned(
+                                            //     top: 5,
+                                            //     right: 5,
+                                            //     child: Container(
+                                            //       color: (productList[index]
+                                            //                       .productData
+                                            //                       .productNetWeight ==
+                                            //                   "") &&
+                                            //               (productList[index]
+                                            //                       .productData
+                                            //                       .productUnit ==
+                                            //                   "")
+                                            //           ? Colors.transparent
+                                            //           : Colors.pink[900],
+                                            //       child: Text(
+                                            //         productList[index]
+                                            //                 .productData
+                                            //                 .productNetWeight +
+                                            //             "  " +
+                                            //             productList[index]
+                                            //                 .productData
+                                            //                 .productUnit,
+                                            //         style: TextStyle(
+                                            //             fontSize: 10,
+                                            //             color: Colors.white),
+                                            //       ),
+                                            //     )),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                });
+                          } else {
+                            return Center(child: Text("0 Search Result!"));
+                          }
+                        });
+                      }
+                    } else {
+                      return FancyLoader(
+                        loaderType: "MainGrid",
+                      );
+                    }
                   }),
             ),
           ),
