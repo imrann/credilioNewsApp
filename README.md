@@ -26,4 +26,4 @@ Steps to run the app:
 
 
 CI/CD:
-- Simply use the git url for this repo and embede in codemagic to build the .apk file
+- Simply use the git url for this repo and integrate it in codemagic to build the .apk file
