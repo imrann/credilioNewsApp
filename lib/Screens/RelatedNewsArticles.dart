@@ -1,12 +1,9 @@
-import 'package:credilio_news/CommonScreens/ErrorPage.dart';
-import 'package:credilio_news/CommonScreens/FancyLoader.dart';
 import 'package:credilio_news/Podo/BreakingNews.dart';
 import 'package:credilio_news/StateManager/BreakingNewListState.dart';
 import 'package:credilio_news/StateManager/WebViewDetailsState.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class RelatedNewsArticles extends StatefulWidget {
   final Function loadurl;

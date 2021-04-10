@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.credilio_news">
+   <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="credilio_news"
         android:icon="@mipmap/ic_launcher">

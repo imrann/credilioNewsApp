@@ -1,11 +1,5 @@
-import 'dart:async';
-
-import 'package:credilio_news/CommonScreens/AppBarCommon.dart';
-import 'package:credilio_news/CommonScreens/FancyLoader.dart';
 import 'package:credilio_news/Screens/RelatedNewsArticles.dart';
-import 'package:credilio_news/StateManager/WebViewDetailsState.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 typedef loadURL = String Function(String);
