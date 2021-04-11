@@ -147,36 +147,42 @@ class _AppBarCommonState extends State<AppBarCommon> {
   Widget getIcon(IconData icon, BuildContext context, Widget route,
       Widget notificationCount) {
     if (null != icon) {
-      return new Container(
-        child: Row(
-          children: <Widget>[
-            InkWell(
-              borderRadius: BorderRadius.circular(100),
-              child: Icon(icon),
-              onTap: () async {
-                if (icon == Icons.search) {
-                  print("search");
-                  setState(() {
-                    l_isSearch = true;
-                  });
-                } else if (icon == Icons.close) {
-                  print("close search");
+      return Material(
+        child: new Container(
+          child: Row(
+            children: <Widget>[
+              InkWell(
+                splashColor: Colors.greenAccent,
+                borderRadius: BorderRadius.circular(100),
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Icon(icon),
+                ),
+                onTap: () async {
+                  if (icon == Icons.search) {
+                    print("search");
+                    setState(() {
+                      l_isSearch = true;
+                    });
+                  } else if (icon == Icons.close) {
+                    print("close search");
 
-                  setState(() {
-                    l_isSearch = null;
-                  });
-                } else if (icon == Icons.grid_view) {
-                  var toggleCategoryNewsView =
-                      Provider.of<CategoryNewsListState>(context,
-                          listen: false);
-                  toggleCategoryNewsView.setToggleCategoryNewsView();
-                }
+                    setState(() {
+                      l_isSearch = null;
+                    });
+                  } else if (icon == Icons.grid_view) {
+                    var toggleCategoryNewsView =
+                        Provider.of<CategoryNewsListState>(context,
+                            listen: false);
+                    toggleCategoryNewsView.setToggleCategoryNewsView();
+                  }
 
-                //  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Maintainance()),);
-              },
-            ),
-            SizedBox(width: 15),
-          ],
+                  //  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Maintainance()),);
+                },
+              ),
+              SizedBox(width: 15),
+            ],
+          ),
         ),
       );
     } else {
